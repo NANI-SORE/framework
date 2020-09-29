@@ -22,15 +22,22 @@ class Product
     private $price;
 
     /**
+     * @var string
+     */
+    private $desc;
+
+    /**
      * @param int $id
      * @param string $name
      * @param float $price
+     * @param string $desc
      */
-    public function __construct(int $id, string $name, float $price)
+    public function __construct(int $id, string $name, float $price, string $desc)
     {
         $this->id = $id;
         $this->name = $name;
         $this->price = $price;
+        $this->desc = $desc;
     }
 
     /**
@@ -58,6 +65,14 @@ class Product
     }
 
     /**
+     * @return string
+     */
+    public function getDesc(): string
+    {
+        return $this->desc;
+    }
+
+    /**
      * @return array
      */
     public function toArray(): array
@@ -66,6 +81,7 @@ class Product
             'id' => $this->id,
             'name' => $this->name,
             'price' => $this->price,
+            'desc' => $this->desc,
         ];
     }
 }

@@ -16,6 +16,7 @@ $body = function () use ($productList, $path) {
     foreach ($productList as $key => $product) {
         echo $position % 3 ? '' : '<tr>'; ?>
                 <td style="text-align: center">
+                    <?= ($position+1)?>)
                     <a href="<?= $path('product_info', ['id' => $product->getId()]) ?>"><?= $product->getName() ?></a>
                     <br /><br />
                     <?= $product->getPrice() ?> руб.
