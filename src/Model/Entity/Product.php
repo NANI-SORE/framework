@@ -32,7 +32,7 @@ class Product
      * @param float $price
      * @param string $desc
      */
-    public function __construct(int $id, string $name, float $price, string $desc)
+    public function __construct(int $id, string $name, float $price, string $desc = '')
     {
         $this->id = $id;
         $this->name = $name;

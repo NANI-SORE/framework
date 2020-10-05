@@ -57,6 +57,20 @@ class ProductController
     }
 
     /**
+     * Список всех продуктов с описаниями
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function descListAction(Request $request): Response
+    {
+        $productList = (new Product())->getAll($request->query->get('sort', ''));
+
+        return $this->render('product/descList.html.php', ['productList' => $productList]);
+    }
+
+    /**
      * Публикация сообщения в соц.сети
      *
      * @param Request $request

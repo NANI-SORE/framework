@@ -18,6 +18,10 @@ $routes->add(
     new Route('/product/list', ['_controller' => [ProductController::class, 'listAction']])
 );
 $routes->add(
+    'product_desc_list',
+    new Route('/product/desclist', ['_controller' => [ProductController::class, 'descListAction']])
+);
+$routes->add(
     'product_info',
     new Route('/product/info/{id}', ['_controller' => [ProductController::class, 'infoAction']])
 );
