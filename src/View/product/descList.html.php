@@ -26,7 +26,7 @@ $body = function () use ($productList, $path) {
                 echo($position + 1) % 3 ? '' : '</tr>';
         ++$position;
     }
-    echo $position % 3 ? str_repeat('<td></td>', 3 - $position) . '</tr>' : ''; ?>
+    echo $position % 3 ? str_repeat('<td></td>', 3 - ($position % 3)) . '</tr>' : ''; ?>
     </table>
 <?php
 };
