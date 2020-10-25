@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Model\Repository;
 
@@ -44,9 +44,10 @@ class User
      * Фабрика по созданию сущности пользователя
      *
      * @param array $user
+     * @param bool $safe - если true, создает без некоторых данных (например, хеш пароля)
      * @return Entity\User
      */
-    private function createUser(array $user): Entity\User
+    private function createUser(array $user, bool $safe = false): Entity\User
     {
         $role = $user['role'];
 
@@ -54,9 +55,26 @@ class User
             $user['id'],
             $user['name'],
             $user['login'],
-            $user['password'],
+            $safe ? '' : $user['password'],
             new Entity\Role($role['id'], $role['title'], $role['role'])
         );
+    }
+
+    /**
+     * Получаем всех пользователей
+     *
+     * @return array
+     */
+    public function fetchAll(): array
+    {
+        $userList = [];
+        foreach ($this->getDataFromSource() as $item) {
+            $output = $this->createUser($item, true);
+
+            $userList[] = $output;
+        }
+
+        return $userList;
     }
 
     /**
@@ -68,7 +86,7 @@ class User
      */
     private function getDataFromSource(array $search = [])
     {
-        $admin = ['id' => 1, 'title' => 'Super Admin', 'role' => 'admin'];
+        $admin = ['id' => 1, 'title' => 'Admin', 'role' => 'admin'];
         $user = ['id' => 1, 'title' => 'Main user', 'role' => 'user'];
         $test = ['id' => 1, 'title' => 'For test needed', 'role' => 'test'];
 
@@ -107,6 +125,13 @@ class User
                 'login' => 'student',
                 'password' => '$2y$10$TcQdU.qWG0s7XGeIqnhquOH/v3r2KKbes8bLIL6NFWpqfFn.cwWha', // PaSsWoRd
                 'role' => $user
+            ],
+            [
+                'id' => 6,
+                'name' => 'admin',
+                'login' => 'admin',
+                'password' => '$2y$10$j4DX.lEvkVLVt6PoAXr6VuomG3YfnssrW0GA8808Dy5ydwND/n8DW', // PaSsWoRd
+                'role' => $admin
             ],
         ];
 
