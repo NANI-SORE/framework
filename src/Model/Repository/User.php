@@ -130,7 +130,7 @@ class User
                 'id' => 6,
                 'name' => 'admin',
                 'login' => 'admin',
-                'password' => '$2y$10$j4DX.lEvkVLVt6PoAXr6VuomG3YfnssrW0GA8808Dy5ydwND/n8DW', // PaSsWoRd
+                'password' => '$2y$10$j4DX.lEvkVLVt6PoAXr6VuomG3YfnssrW0GA8808Dy5ydwND/n8DW', // qwerty
                 'role' => $admin
             ],
         ];
