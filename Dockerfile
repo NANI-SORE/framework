@@ -1,7 +1,23 @@
-FROM composer:1.9
-ENV COMPOSER_ALLOW_SUPERUSER 1
-WORKDIR /app
-COPY composer.json composer.json
-RUN composer install --prefer-dist --no-scripts --no-dev --no-autoloader && rm -rf /root/.composer
-COPY . ./
-RUN composer dump-autoload --no-scripts --no-dev --optimize
+FROM php:7.2-fpm
+
+ENV APP_DIR /app
+
+RUN apt-get update \
+  && apt-get install -y libzip-dev zip \
+  && docker-php-ext-configure zip --with-libzip \
+  && docker-php-ext-install zip \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    composer global require hirak/prestissimo --no-plugins --no-scripts
+
+# Adds the application code to the image
+ADD . ${APP_DIR}
+
+# Define current working directory.
+WORKDIR ${APP_DIR}
+
+RUN composer install
+
+EXPOSE 8080
