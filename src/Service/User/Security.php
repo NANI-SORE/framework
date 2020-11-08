@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Service\User;
 
@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class Security implements ISecurity
 {
     private const SESSION_USER_IDENTITY = 'userId';
+    private const SESSION_USER_LAST_ORDER = 0;
 
     /**
      * @var SessionInterface
@@ -79,8 +80,28 @@ class Security implements ISecurity
     public function logout(): void
     {
         $this->session->set(self::SESSION_USER_IDENTITY, null);
+        $this->session->set(self::SESSION_USER_LAST_ORDER, 0);
 
         // Здесь могут выполняться другие действия связанные с разлогиниванием пользователя
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLastOrder(): float
+    {
+        $lastOrder = $this->session->get(self::SESSION_USER_LAST_ORDER) OR 0;
+        return $lastOrder;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setLastOrder(float $orderPrice = 0): void
+    {
+        $user = $this->getUser();
+        $user->setLastOrder($orderPrice);
+        $this->session->set(self::SESSION_USER_LAST_ORDER, $orderPrice);
     }
 
     /**

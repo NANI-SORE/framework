@@ -1,18 +1,22 @@
 <?php
 
 /** @var \Model\Entity\Product[] $productList */
-/** @var bool $isLogged */
-/** @var \Closure $path */
-$body = function () use ($productList, $isLogged, $path) {
-    ?>
+/** @var float $discount */
+/** @var float $orderPrice */
+$body = function () use ($productList, $discount, $orderPrice) {
+?>
     <form method="post">
         <table cellpadding="10">
             <tr>
                 <td colspan="3" align="center">Покупка успешно совершена</td>
+                <td colspan="3" align="center">Ваша скидка <?= (string)$discount ?>%</td>
+            </tr>
+            <tr>
+                <td colspan="3" align="center">Покупка <?= (string)count($productList) ?> товаров на сумму <?= (string)$orderPrice ?> руб. успешно совершена</td>
             </tr>
         </table>
     </form>
-    <?php
+<?php
 };
 
 $renderLayout(

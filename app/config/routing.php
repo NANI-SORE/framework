@@ -2,6 +2,7 @@
 
 use Controller\MainController;
 use Controller\OrderController;
+use Controller\UserController;
 use Controller\ProductController;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
@@ -41,15 +42,19 @@ $routes->add(
 
 $routes->add(
     'user_authentication',
-    new Route('/user/authentication', ['_controller' => [\Controller\UserController::class, 'authenticationAction']])
+    new Route('/user/authentication', ['_controller' => [UserController::class, 'authenticationAction']])
 );
 $routes->add(
     'logout',
-    new Route('/user/logout', ['_controller' => [\Controller\UserController::class, 'logoutAction']])
+    new Route('/user/logout', ['_controller' => [UserController::class, 'logoutAction']])
 );
 $routes->add(
     'user_list',
-    new Route('/user/list', ['_controller' => [\Controller\UserController::class, 'listAction']])
+    new Route('/user/list', ['_controller' => [UserController::class, 'listAction']])
+);
+$routes->add(
+    'account',
+    new Route('/user/account', ['_controller' => [UserController::class, 'accountAction']])
 );
 
 return $routes;

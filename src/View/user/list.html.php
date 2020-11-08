@@ -11,6 +11,7 @@ $body = function () use ($userList) {
         <ol>
             <li>Логин: <?= $user->getLogin() ?></li>
             <li>Имя: <?= $user->getName() ?></li>
+            <li>День Рождения: <?= date("d.m.Y", $user-> getBirthday()) ?></li>
             <li>Роль: <?= $user->getRole()->getTitle() ?></li>
             <li>Тип роли: <?= $user->getRole()->getType() ?></li>
         </ol>

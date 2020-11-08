@@ -54,6 +54,18 @@ class UserController
     }
 
     /**
+     * Личный кабинет
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function accountAction(Request $request): Response
+    {
+        $session = new Security($request->getSession());
+        return $this->render('user/account.html.php', ['user' => $session->getUser(), 'lastOrder' => $session->getLastOrder()]);
+    }
+
+    /**
      * Список всех пользователей
      *
      * @param Request $request

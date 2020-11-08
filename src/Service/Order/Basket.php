@@ -1,19 +1,28 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Service\Order;
 
 use Model;
 use Service\Billing\Card;
 use Service\Billing\IBilling;
+use Service\Discount\OrderDiscount;
+use Service\Discount\UserDiscount;
+use Service\Discount\ItemDiscount;
 use Service\Communication\Email;
 use Service\Communication\ICommunication;
 use Service\Discount\IDiscount;
-use Service\Discount\NullObject;
 use Service\User\ISecurity;
 use Service\User\Security;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+function debug_log($object = null, $label = null)
+{
+    $message = json_encode($object, JSON_PRETTY_PRINT);
+    $label = "Debug" . ($label ? " ($label): " : ': ');
+    echo "<script>console.log(\"$label\", $message);</script>";
+}
 
 class Basket
 {
@@ -52,6 +61,36 @@ class Basket
     }
 
     /**
+     * Убираем товар из заказа
+     *
+     * @param int $product
+     *
+     * @return void
+     */
+    public function removeProduct(int $product): void
+    {
+        $basket = $this->session->get(static::BASKET_DATA_KEY, []);
+        $key = array_search($product, $basket, true);
+        if ($key !== FALSE) {
+            unset($basket[$key]);
+            $this->session->set(static::BASKET_DATA_KEY, $basket);
+        }
+    }
+
+    /**
+     * Очистить корзину
+     *
+     * @return void
+     */
+    public function clear(): void
+    {
+        $basket = $this->session->get(static::BASKET_DATA_KEY, []);
+        if ($basket) {
+            $this->session->set(static::BASKET_DATA_KEY, []);
+        }
+    }
+
+    /**
      * Проверяем, лежит ли продукт в корзине или нет
      *
      * @param int $productId
@@ -71,57 +110,101 @@ class Basket
     public function getProductsInfo(): array
     {
         $productIds = $this->getProductIds();
-        return $this->getProductRepository()->search($productIds);
+
+        $products = $this->getProductRepository()->search($productIds);
+        foreach ($products as $product) {
+            $itemDiscount = new ItemDiscount($product->getId());
+            $product->setDiscount($itemDiscount->getDiscount());
+        }
+        return $products;
+    }
+
+    /**
+     * Получаем наибольшую из возможных скидок
+     *
+     * @return array
+     */
+    public function getOrderPrice(): array
+    {
+        $security = new Security($this->session);
+        // Здесь должна быть некоторая логика получения информации о скидки пользователя
+        $discounts = [];
+
+        // скидка на др
+        $discounts[] = new UserDiscount($security->getUser());
+
+        // прогон всех товаров и применение скидки к подходящим + запись цены всего заказа
+        $orderPrice = 0;
+        foreach ($this->getProductsInfo() as $product) {
+            $itemDiscount = new ItemDiscount($product->getId());
+            $product->setDiscount($itemDiscount->getDiscount());
+
+            $orderPrice += $product->getPrice() * (1 - ($itemDiscount->getDiscount() / 100));
+        }
+
+        // скидка на весь заказ
+        $orderDiscount = new OrderDiscount($orderPrice);
+        $discounts[] = $orderDiscount;
+
+        // выбираем наибольшую скидку из доступных
+        $biggestDiscount = $orderDiscount;
+        foreach ($discounts as $_discount) {
+            if ($_discount->getDiscount() > $biggestDiscount->getDiscount()) {
+                $biggestDiscount = $_discount;
+            }
+        }
+
+        return ['discount' => $biggestDiscount->getDiscount(), 'orderPrice' => $orderPrice];
     }
 
     /**
      * Оформление заказа
      *
-     * @return void
+     * @return array
      */
-    public function checkout(): void
+    public function checkout(): array
     {
+        $security = new Security($this->session);
+
         // Здесь должна быть некоторая логика выбора способа платежа
         $billing = new Card();
-
-        // Здесь должна быть некоторая логика получения информации о скидки пользователя
-        $discount = new NullObject();
 
         // Здесь должна быть некоторая логика получения способа уведомления пользователя о покупке
         $communication = new Email();
 
-        $security = new Security($this->session);
+        // считаем цену заказа и скидки
+        list('discount' => $discount, 'orderPrice' => $orderPrice) = $this->getOrderPrice();
 
-        $this->checkoutProcess($discount, $billing, $security, $communication);
+        return $this->checkoutProcess($discount, $orderPrice, $billing, $security, $communication);
     }
 
     /**
      * Проведение всех этапов заказа
      *
      * @param IDiscount $discount,
+     * @param float $totalPrice
      * @param IBilling $billing,
      * @param ISecurity $security,
      * @param ICommunication $communication
-     * @return void
+     * @return array order info
      */
     public function checkoutProcess(
-        IDiscount $discount,
+        float $discount,
+        float $orderPrice,
         IBilling $billing,
         ISecurity $security,
         ICommunication $communication
-    ): void {
-        $totalPrice = 0;
-        foreach ($this->getProductsInfo() as $product) {
-            $totalPrice += $product->getPrice();
-        }
+    ): array {
+        $products = $this->getProductsInfo();
 
-        $discount = $discount->getDiscount();
-        $totalPrice = $totalPrice - $totalPrice / 100 * $discount;
+        $percentLeft = 1 - ($discount / 100);
+        $orderPrice = $orderPrice * $percentLeft;
 
-        $billing->pay($totalPrice);
+        $billing->pay($orderPrice);
 
         $user = $security->getUser();
         $communication->process($user, 'checkout_template');
+        return ['productList' => $products, 'discount' => $discount, 'orderPrice' => $orderPrice];
     }
 
     /**

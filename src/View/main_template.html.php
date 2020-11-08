@@ -43,6 +43,9 @@
                                     <?php
                                     } ?>
                                     <tr>
+                                        <td><a href="<?= $path('account') ?>">Личный кабинет</a></td>
+                                    </tr>
+                                    <tr>
                                         <td><a href="<?= $path('logout') ?>">Выход</a></td>
                                     </tr>
                                 <?php

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Controller;
 
@@ -23,13 +23,29 @@ class OrderController
     public function infoAction(Request $request): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
-            return $this->redirect('order_checkout');
+            // либо пришло удаление продукта, либо оплата покупки
+            $removeProduct = (int)$request->request->get('removeProduct');
+            $basket = (new Basket($request->getSession()));
+            if ($removeProduct) {
+                $basket->removeProduct($removeProduct);
+            } else {
+                return $this->redirect('order_checkout');
+            }
         }
 
-        $productList = (new Basket($request->getSession()))->getProductsInfo();
-        $isLogged = (new Security($request->getSession()))->isLogged();
+        $user = new Security($request->getSession());
+        $isLogged = $user->isLogged();
+        if ($isLogged) {
+            $basket = new Basket($request->getSession());
+            $productList = $basket->getProductsInfo();
+            list('discount' => $discount, 'orderPrice' => $orderPrice) = $basket->getOrderPrice();
+        } else {
+            $productList = [];
+            $discount = 0;
+            $orderPrice = 0;
+        }
 
-        return $this->render('order/info.html.php', ['productList' => $productList, 'isLogged' => $isLogged]);
+        return $this->render('order/info.html.php', ['productList' => $productList, 'isLogged' => $isLogged, 'discount' => $discount, 'orderPrice' => $orderPrice]);
     }
 
     /**
@@ -45,8 +61,12 @@ class OrderController
             return $this->redirect('user_authentication');
         }
 
-        (new Basket($request->getSession()))->checkout();
+        $params = (new Basket($request->getSession()))->checkout();
 
-        return $this->render('order/checkout.html.php');
+        (new Security($request->getSession()))->setLastOrder($params['orderPrice']); // назначить сумму последнего заказа юзера
+
+        (new Basket($request->getSession()))->clear(); // очистить корзину после покупки
+
+        return $this->render('order/checkout.html.php', ['productList' => $params['productList'], 'discount' => $params['discount'], 'orderPrice' => $params['orderPrice']]);
     }
 }

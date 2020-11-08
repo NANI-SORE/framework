@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Model\Repository;
 
@@ -21,11 +21,30 @@ class Product
         }
 
         $productList = [];
+        $product = new Entity\Product(0, '', 0, '');
         foreach ($this->getDataFromSource(['id' => $ids]) as $item) {
-            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
+            $product->setId($item['id']);
+            $product->setPrice($item['price']);
+            $product->setName($item['name']);
+            $product->setDesc($item['desc']);
+            // $product->setDiscount($item['discount']);
+            $productList[] = clone $product;
+            // $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
         }
 
         return $productList;
+    }
+
+    /**
+     * Найти продукт по Id
+     *
+     * @param int $id
+     * @return Entity\Product[]
+     */
+    public function fetchById(int $id): array
+    {
+        // wrap $id in array and search
+        return $this->search(compact($id));
     }
 
     /**
@@ -36,8 +55,15 @@ class Product
     public function fetchAll(): array
     {
         $productList = [];
+        $product = new Entity\Product(0, '', 0, '');
         foreach ($this->getDataFromSource() as $item) {
-            $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
+            $product->setId($item['id']);
+            $product->setPrice($item['price']);
+            $product->setName($item['name']);
+            $product->setDesc($item['desc']);
+            // $product->setDiscount($item['discount']);
+            $productList[] = clone $product;
+            // $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
         }
 
         return $productList;

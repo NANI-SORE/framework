@@ -1,11 +1,12 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Controller;
 
 use Framework\Render;
 use Service\Order\Basket;
+use Service\User\Security;
 use Service\Product\Product;
 use Service\SocialNetwork\ISocialNetwork;
 use Service\SocialNetwork\SocialNetwork;
