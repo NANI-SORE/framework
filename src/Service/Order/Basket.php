@@ -112,15 +112,11 @@ class Basket
         $productIds = $this->getProductIds();
 
         $products = $this->getProductRepository()->search($productIds);
-        foreach ($products as $product) {
-            $itemDiscount = new ItemDiscount($product->getId());
-            $product->setDiscount($itemDiscount->getDiscount());
-        }
         return $products;
     }
 
     /**
-     * Получаем наибольшую из возможных скидок
+     * Получаем информацию о скидках
      *
      * @return array
      */
@@ -136,10 +132,16 @@ class Basket
         // прогон всех товаров и применение скидки к подходящим + запись цены всего заказа
         $orderPrice = 0;
         foreach ($this->getProductsInfo() as $product) {
-            $itemDiscount = new ItemDiscount($product->getId());
-            $product->setDiscount($itemDiscount->getDiscount());
+            $itemDisc = new ItemDiscount($product->getId());
+            $discountedItemPrice = $product->getPrice() * (1 - ($itemDisc->getDiscount() / 100));
 
-            $orderPrice += $product->getPrice() * (1 - ($itemDiscount->getDiscount() / 100));
+            $itemDiscounts[] = [
+                'productId' => $product->getId(),
+                'itemDiscount' => $itemDisc->getDiscount(),
+                'discountedPrice' => $discountedItemPrice
+            ];
+
+            $orderPrice += $discountedItemPrice;
         }
 
         // скидка на весь заказ
@@ -154,7 +156,7 @@ class Basket
             }
         }
 
-        return ['discount' => $biggestDiscount->getDiscount(), 'orderPrice' => $orderPrice];
+        return ['orderDiscount' => $biggestDiscount->getDiscount(), 'itemDiscounts' => $itemDiscounts, 'orderPrice' => $orderPrice];
     }
 
     /**
@@ -173,9 +175,9 @@ class Basket
         $communication = new Email();
 
         // считаем цену заказа и скидки
-        list('discount' => $discount, 'orderPrice' => $orderPrice) = $this->getOrderPrice();
+        list('orderDiscount' => $orderDiscount, 'orderPrice' => $orderPrice) = $this->getOrderPrice();
 
-        return $this->checkoutProcess($discount, $orderPrice, $billing, $security, $communication);
+        return $this->checkoutProcess($orderDiscount, $orderPrice, $billing, $security, $communication);
     }
 
     /**

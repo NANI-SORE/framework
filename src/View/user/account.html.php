@@ -15,7 +15,7 @@ $body = function () use ($user, $lastOrder) {
         <?php 
         if($lastOrder) {
             ?>
-            <li>Последний заказ: <?= $lastOrder ?></li>
+            <li>Последний заказ: <?= $lastOrder ?> руб.</li>
             <?php
         }
         ?>

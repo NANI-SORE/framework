@@ -38,14 +38,19 @@ class OrderController
         if ($isLogged) {
             $basket = new Basket($request->getSession());
             $productList = $basket->getProductsInfo();
-            list('discount' => $discount, 'orderPrice' => $orderPrice) = $basket->getOrderPrice();
+            list(
+                'orderDiscount' => $orderDiscount,
+                'orderPrice' => $orderPrice,
+                'itemDiscounts' => $itemDiscounts
+            ) = $basket->getOrderPrice();
         } else {
             $productList = [];
-            $discount = 0;
+            $orderDiscount = 0;
+            $itemDiscounts = [];
             $orderPrice = 0;
         }
 
-        return $this->render('order/info.html.php', ['productList' => $productList, 'isLogged' => $isLogged, 'discount' => $discount, 'orderPrice' => $orderPrice]);
+        return $this->render('order/info.html.php', ['productList' => $productList, 'isLogged' => $isLogged, 'orderDiscount' => $orderDiscount, 'orderPrice' => $orderPrice, 'itemDiscounts' => $itemDiscounts]);
     }
 
     /**

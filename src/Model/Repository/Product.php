@@ -27,7 +27,6 @@ class Product
             $product->setPrice($item['price']);
             $product->setName($item['name']);
             $product->setDesc($item['desc']);
-            // $product->setDiscount($item['discount']);
             $productList[] = clone $product;
             // $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
         }
@@ -61,7 +60,6 @@ class Product
             $product->setPrice($item['price']);
             $product->setName($item['name']);
             $product->setDesc($item['desc']);
-            // $product->setDiscount($item['discount']);
             $productList[] = clone $product;
             // $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
         }

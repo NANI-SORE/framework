@@ -4,8 +4,9 @@
 /** @var bool $isLogged */
 /** @var \Closure $path */
 /** @var float $orderPrice */
-/** @var float $discount */
-$body = function () use ($productList, $isLogged, $path, $orderPrice, $discount) {
+/** @var float $orderDiscount */
+/** @var array $itemDiscounts */
+$body = function () use ($productList, $isLogged, $path, $orderPrice, $orderDiscount, $itemDiscounts) {
 ?>
     <form method="post">
         <table cellpadding="10">
@@ -20,26 +21,29 @@ $body = function () use ($productList, $isLogged, $path, $orderPrice, $discount)
                     <td><?= $n++ ?>.</td>
                     <td><?= $product->getName() ?></td>
                     <td><?= $product->getPrice() ?> руб.</td>
-                    <?php if ($product->getDiscount() > 0) {
-                        $itemDiscounted = $product->getPrice() * (1 - ($product->getDiscount() / 100));
+                    <?php 
+                    $isDiscounted = array_search($product->getId(), array_column($itemDiscounts, 'productId'));
+                    if ($isDiscounted !== FALSE && $itemDiscounts[$isDiscounted]['itemDiscount']) {
+                        $_itemPrice = $itemDiscounts[$isDiscounted]['discountedPrice'];
+                        $_itemDiscount = $itemDiscounts[$isDiscounted]['itemDiscount'];
                     ?>
-                        <td><?= $product->getDiscount() ?>% - скидка на товар</td>
-                        <td><?= $itemDiscounted ?> руб. со скидкой</td>
+                        <td><?= $_itemDiscount ?>% - скидка на товар</td>
+                        <td><?= $_itemPrice ?> руб. со скидкой</td>
                     <?php
                     }
                     ?>
                     <td>
                         <form method="post">
-                            <input name="removeProduct" type="hidden" value="<?= $product->getId() ?>" />';
+                            <input name="removeProduct" type="hidden" value="<?= $product->getId() ?>" />
                             <input type="submit" value="Удалить" />
                         </form>
                     </td>
                 </tr>
             <?php
-                $totalWithDiscount = $orderPrice * (1 - ($discount / 100));
+                $totalWithDiscount = $orderPrice * (1 - ($orderDiscount / 100));
             } ?>
             <tr>
-                <td colspan="3" align="right">Итого: <?= $orderPrice ?> руб. Скидка <?= $discount ?>% => <?= $totalWithDiscount ?> руб.</td>
+                <td colspan="3" align="right">Итого: <?= $orderPrice ?> руб. Скидка <?= $orderDiscount ?>% => <?= $totalWithDiscount ?> руб.</td>
             </tr>
             <?php if ($orderPrice > 0) {
                 if ($isLogged) {
