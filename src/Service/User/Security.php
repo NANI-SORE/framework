@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class Security implements ISecurity
 {
     private const SESSION_USER_IDENTITY = 'userId';
-    private const SESSION_USER_LAST_ORDER = 0;
+    private const SESSION_USER_LAST_ORDER = 'lastOrder';
 
     /**
      * @var SessionInterface
