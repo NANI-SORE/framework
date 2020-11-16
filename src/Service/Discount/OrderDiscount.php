@@ -29,11 +29,11 @@ class OrderDiscount implements IDiscount
      */
     public function getDiscount(): float
     {
-        if ($this->orderPrice >= self::TOTAL_ORDER){
+        if ($this->orderPrice >= self::TOTAL_ORDER) {
             $discount = self::DISCOUNT_AMOUNT;
-        }
-        else
+        } else {
             $discount = 0;
+        }
 
         return $discount;
     }

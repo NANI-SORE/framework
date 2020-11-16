@@ -17,13 +17,6 @@ use Service\User\ISecurity;
 use Service\User\Security;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-function debug_log($object = null, $label = null)
-{
-    $message = json_encode($object, JSON_PRETTY_PRINT);
-    $label = "Debug" . ($label ? " ($label): " : ': ');
-    echo "<script>console.log(\"$label\", $message);</script>";
-}
-
 class Basket
 {
     /**
@@ -71,7 +64,7 @@ class Basket
     {
         $basket = $this->session->get(static::BASKET_DATA_KEY, []);
         $key = array_search($product, $basket, true);
-        if ($key !== FALSE) {
+        if ($key !== false) {
             unset($basket[$key]);
             $this->session->set(static::BASKET_DATA_KEY, $basket);
         }
@@ -123,13 +116,11 @@ class Basket
     public function getOrderPrice(): array
     {
         $security = new Security($this->session);
-        // Здесь должна быть некоторая логика получения информации о скидки пользователя
+
         $discounts = [];
 
-        // скидка на др
         $discounts[] = new UserDiscount($security->getUser());
 
-        // прогон всех товаров и применение скидки к подходящим + запись цены всего заказа
         $orderPrice = 0;
         foreach ($this->getProductsInfo() as $product) {
             $itemDisc = new ItemDiscount($product->getId());
@@ -144,11 +135,9 @@ class Basket
             $orderPrice += $discountedItemPrice;
         }
 
-        // скидка на весь заказ
         $orderDiscount = new OrderDiscount($orderPrice);
         $discounts[] = $orderDiscount;
 
-        // выбираем наибольшую скидку из доступных
         $biggestDiscount = $orderDiscount;
         foreach ($discounts as $_discount) {
             if ($_discount->getDiscount() > $biggestDiscount->getDiscount()) {
@@ -174,7 +163,6 @@ class Basket
         // Здесь должна быть некоторая логика получения способа уведомления пользователя о покупке
         $communication = new Email();
 
-        // считаем цену заказа и скидки
         list('orderDiscount' => $orderDiscount, 'orderPrice' => $orderPrice) = $this->getOrderPrice();
 
         return $this->checkoutProcess($orderDiscount, $orderPrice, $billing, $security, $communication);

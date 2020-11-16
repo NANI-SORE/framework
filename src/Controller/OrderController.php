@@ -23,7 +23,6 @@ class OrderController
     public function infoAction(Request $request): Response
     {
         if ($request->isMethod(Request::METHOD_POST)) {
-            // либо пришло удаление продукта, либо оплата покупки
             $removeProduct = (int)$request->request->get('removeProduct');
             $basket = (new Basket($request->getSession()));
             if ($removeProduct) {
@@ -68,9 +67,9 @@ class OrderController
 
         $params = (new Basket($request->getSession()))->checkout();
 
-        (new Security($request->getSession()))->setLastOrder($params['orderPrice']); // назначить сумму последнего заказа юзера
+        (new Security($request->getSession()))->setLastOrder($params['orderPrice']);
 
-        (new Basket($request->getSession()))->clear(); // очистить корзину после покупки
+        (new Basket($request->getSession()))->clear();
 
         return $this->render('order/checkout.html.php', ['productList' => $params['productList'], 'discount' => $params['discount'], 'orderPrice' => $params['orderPrice']]);
     }

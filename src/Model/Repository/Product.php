@@ -28,7 +28,6 @@ class Product
             $product->setName($item['name']);
             $product->setDesc($item['desc']);
             $productList[] = clone $product;
-            // $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
         }
 
         return $productList;
@@ -42,7 +41,6 @@ class Product
      */
     public function fetchById(int $id): array
     {
-        // wrap $id in array and search
         return $this->search(compact($id));
     }
 
@@ -61,7 +59,6 @@ class Product
             $product->setName($item['name']);
             $product->setDesc($item['desc']);
             $productList[] = clone $product;
-            // $productList[] = new Entity\Product($item['id'], $item['name'], $item['price'], $item['desc']);
         }
 
         return $productList;

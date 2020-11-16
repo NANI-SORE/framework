@@ -90,7 +90,7 @@ class Security implements ISecurity
      */
     public function getLastOrder(): float
     {
-        $lastOrder = $this->session->get(self::SESSION_USER_LAST_ORDER) OR 0;
+        $lastOrder = $this->session->get(self::SESSION_USER_LAST_ORDER) ?? 0;
         return $lastOrder;
     }
 

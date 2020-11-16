@@ -3,7 +3,7 @@
 /** @var \Model\Entity\User $user */
 /**@var float $lastOrder */
 $body = function () use ($user, $lastOrder) {
-?>
+    ?>
     <hr>
     <p>Личный кабинет пользователя: <?= $user->getName() ?></p>
     <ol>
@@ -12,13 +12,12 @@ $body = function () use ($user, $lastOrder) {
         <li>День Рождения: <?= date("d.m.Y", $user->getBirthday()) ?></li>
         <li>Роль: <?= $user->getRole()->getTitle() ?></li>
         <li>Тип роли: <?= $user->getRole()->getType() ?></li>
-        <?php 
-        if($lastOrder) {
+        <?php
+        if ($lastOrder) {
             ?>
             <li>Последний заказ: <?= $lastOrder ?> руб.</li>
             <?php
-        }
-        ?>
+        } ?>
     </ol>
     <hr>
 <?php

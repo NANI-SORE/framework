@@ -29,19 +29,19 @@
                                     <td><a href="<?= $path('order_info') ?>">Корзина</a></td>
                                 </tr>
                                 <?php if (!$isAuth) {
-                                ?>
+    ?>
                                     <tr>
                                         <td><a href="<?= $path('user_authentication') ?>">Авторизация</a></td>
                                     </tr>
                                     <?php
-                                } else {
-                                    if ($isAdmin) {
-                                    ?>
+} else {
+        if ($isAdmin) {
+            ?>
                                         <tr>
                                             <td><a href="<?= $path('user_list') ?>">Все пользователи</a></td>
                                         </tr>
                                     <?php
-                                    } ?>
+        } ?>
                                     <tr>
                                         <td><a href="<?= $path('account') ?>">Личный кабинет</a></td>
                                     </tr>
@@ -49,7 +49,7 @@
                                         <td><a href="<?= $path('logout') ?>">Выход</a></td>
                                     </tr>
                                 <?php
-                                } ?>
+    } ?>
                             </table>
                         </td>
                         <td align="center"><br /><?= isset($body) && $body instanceof Closure ? $body() : '' ?><br /></td>

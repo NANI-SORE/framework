@@ -4,7 +4,7 @@
 /** @var float $discount */
 /** @var float $orderPrice */
 $body = function () use ($productList, $discount, $orderPrice) {
-?>
+    ?>
     <form method="post">
         <table cellpadding="10">
             <tr>

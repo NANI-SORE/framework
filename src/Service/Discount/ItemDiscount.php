@@ -34,8 +34,9 @@ class ItemDiscount implements IDiscount
         $discount = 0;
         if ($this->productId == self::PRODUCT_ID) {
             $discount = self::DISCOUNT_AMOUNT;
-        } else
+        } else {
             $discount = 0;
+        }
         return $discount;
     }
 }

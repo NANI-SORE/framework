@@ -2,11 +2,11 @@
 
 /** @var \Model\Entity\User[] $userList */
 $body = function () use ($userList) {
-?>
+    ?>
     <hr>
     <?php
     foreach ($userList as $key => $user) {
-    ?>
+        ?>
         <p>Пользователь: <?= $user->getName() ?></p>
         <ol>
             <li>Логин: <?= $user->getLogin() ?></li>

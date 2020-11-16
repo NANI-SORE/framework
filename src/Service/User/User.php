@@ -8,25 +8,25 @@ use Model;
 
 class User
 {
-        /**
-         * Получаем всех пользователей
-         *
-         * @return Model\Entity\User[]
-         */
-        public function getAll(): array
-        {
-                $userList = $this->getUserRepository()->fetchAll();
+    /**
+     * Получаем всех пользователей
+     *
+     * @return Model\Entity\User[]
+     */
+    public function getAll(): array
+    {
+        $userList = $this->getUserRepository()->fetchAll();
 
-                return $userList;
-        }
+        return $userList;
+    }
 
-        /**
-         * Фабричный метод для репозитория User
-         *
-         * @return Model\Repository\User
-         */
-        protected function getUserRepository(): Model\Repository\User
-        {
-                return new Model\Repository\User();
-        }
+    /**
+     * Фабричный метод для репозитория User
+     *
+     * @return Model\Repository\User
+     */
+    protected function getUserRepository(): Model\Repository\User
+    {
+        return new Model\Repository\User();
+    }
 }
