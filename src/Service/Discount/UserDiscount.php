@@ -35,7 +35,6 @@ class UserDiscount implements IDiscount
 
     public function getDiscountBirthday($birthday): float
     {
-        #$birthday = '20.11.2010';
         $now = date('d.m.Y');
 
         $birthdayString = date('d.m.Y', $birthday);

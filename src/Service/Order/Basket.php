@@ -6,12 +6,10 @@ namespace Service\Order;
 
 use Model;
 use Service\Billing\Card;
-use Service\Billing\IBilling;
 use Service\Discount\OrderDiscount;
 use Service\Discount\UserDiscount;
 use Service\Discount\ItemDiscount;
 use Service\Communication\Email;
-use Service\Communication\ICommunication;
 use Service\Discount\IDiscount;
 use Service\User\ISecurity;
 use Service\User\Security;
@@ -145,7 +143,7 @@ class Basket
             }
         }
 
-        return ['orderDiscount' => $biggestDiscount->getDiscount(), 'itemDiscounts' => $itemDiscounts, 'orderPrice' => $orderPrice];
+        return ['orderDiscount' => $biggestDiscount, 'itemDiscounts' => $itemDiscounts, 'orderPrice' => $orderPrice];
     }
 
     /**
@@ -155,46 +153,17 @@ class Basket
      */
     public function checkout(): array
     {
-        $security = new Security($this->session);
-
-        // Здесь должна быть некоторая логика выбора способа платежа
-        $billing = new Card();
-
-        // Здесь должна быть некоторая логика получения способа уведомления пользователя о покупке
-        $communication = new Email();
-
         list('orderDiscount' => $orderDiscount, 'orderPrice' => $orderPrice) = $this->getOrderPrice();
 
-        return $this->checkoutProcess($orderDiscount, $orderPrice, $billing, $security, $communication);
-    }
+        $basketBuilder = new BasketBuilder();
+        $basketBuilder->setOrderPrice($orderPrice)
+            ->setDiscount($orderDiscount)
+            ->setSecurity(new Security($this->session))
+            ->setBilling(new Card())
+            ->setCommunication(new Email());
 
-    /**
-     * Проведение всех этапов заказа
-     *
-     * @param IDiscount $discount,
-     * @param float $totalPrice
-     * @param IBilling $billing,
-     * @param ISecurity $security,
-     * @param ICommunication $communication
-     * @return array order info
-     */
-    public function checkoutProcess(
-        float $discount,
-        float $orderPrice,
-        IBilling $billing,
-        ISecurity $security,
-        ICommunication $communication
-    ): array {
-        $products = $this->getProductsInfo();
-
-        $percentLeft = 1 - ($discount / 100);
-        $orderPrice = $orderPrice * $percentLeft;
-
-        $billing->pay($orderPrice);
-
-        $user = $security->getUser();
-        $communication->process($user, 'checkout_template');
-        return ['productList' => $products, 'discount' => $discount, 'orderPrice' => $orderPrice];
+        $checkoutProcess = $basketBuilder->build();
+        return $checkoutProcess->checkoutProcess($this->getProductsInfo());
     }
 
     /**

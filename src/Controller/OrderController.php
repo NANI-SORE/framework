@@ -42,6 +42,8 @@ class OrderController
                 'orderPrice' => $orderPrice,
                 'itemDiscounts' => $itemDiscounts
             ) = $basket->getOrderPrice();
+
+            $orderDiscount = $orderDiscount->getDiscount();
         } else {
             $productList = [];
             $orderDiscount = 0;
