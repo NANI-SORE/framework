@@ -27,9 +27,9 @@ class FacadeCheckout
     /**
      * @param BasketBuilder $basketBuilder
      */
-    public function checkoutProcess(BasketBuilder $basketBuilder):void
+    public function checkoutProcess(BasketBuilder $basketBuilder): array
     {
-        $basketBuilder->build()->checkoutProcess($this->getBasket()->getProductsInfo());
+        return $basketBuilder->build()->checkoutProcess($this->getBasket()->getProductsInfo());
     }
 
 
@@ -49,8 +49,7 @@ class FacadeCheckout
             ->setBilling(new Card())
             ->setCommunication(new Email());
 
-        $checkoutProcess = $basketBuilder->build();
-        return $checkoutProcess->checkoutProcess($this->getBasket()->getProductsInfo());
+        return $this->checkoutProcess($basketBuilder);
     }
 
     /**
