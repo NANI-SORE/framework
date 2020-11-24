@@ -6,6 +6,7 @@ namespace Controller;
 
 use Framework\Render;
 use Service\Order\Basket;
+use Service\Order\FacadeCheckout;
 use Service\User\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,16 +63,17 @@ class OrderController
      */
     public function checkoutAction(Request $request): Response
     {
-        $isLogged = (new Security($request->getSession()))->isLogged();
+        $session = $request->getSession();
+        $isLogged = (new Security($session))->isLogged();
         if (!$isLogged) {
             return $this->redirect('user_authentication');
         }
 
-        $params = (new Basket($request->getSession()))->checkout();
+        $params = (new FacadeCheckout($session))->checkout();
 
-        (new Security($request->getSession()))->setLastOrder($params['orderPrice']);
+        (new Security($session))->setLastOrder($params['orderPrice']);
 
-        (new Basket($request->getSession()))->clear();
+        (new Basket($session))->clear();
 
         return $this->render('order/checkout.html.php', ['productList' => $params['productList'], 'discount' => $params['discount'], 'orderPrice' => $params['orderPrice']]);
     }

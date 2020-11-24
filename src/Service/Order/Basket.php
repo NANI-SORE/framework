@@ -147,26 +147,6 @@ class Basket
     }
 
     /**
-     * Оформление заказа
-     *
-     * @return array
-     */
-    public function checkout(): array
-    {
-        list('orderDiscount' => $orderDiscount, 'orderPrice' => $orderPrice) = $this->getOrderPrice();
-
-        $basketBuilder = new BasketBuilder();
-        $basketBuilder->setOrderPrice($orderPrice)
-            ->setDiscount($orderDiscount)
-            ->setSecurity(new Security($this->session))
-            ->setBilling(new Card())
-            ->setCommunication(new Email());
-
-        $checkoutProcess = $basketBuilder->build();
-        return $checkoutProcess->checkoutProcess($this->getProductsInfo());
-    }
-
-    /**
      * Фабричный метод для репозитория Product
      *
      * @return Model\Repository\Product

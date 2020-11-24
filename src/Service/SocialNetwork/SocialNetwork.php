@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Service\SocialNetwork;
 
@@ -20,15 +20,18 @@ class SocialNetwork
 
         switch ($socialNetwork) {
             case ISocialNetwork::SOCIAL_NETWORK_VK:
-                //$socialNetworkAdapter = new VKAdapter();
+                $vkClass = new Vkontakte();
+                $socialNetworkAdapter = new VKAdapter($vkClass);
                 break;
 
             case ISocialNetwork::SOCIAL_NETWORK_FACEBOOK:
-                //$socialNetworkAdapter = new FacebookAdapter();
+                $fbClass = new Facebook();
+                $socialNetworkAdapter = new FacebookAdapter($fbClass);
                 break;
 
             default:
-                //$socialNetworkAdapter = new VKAdapter();
+                $vkClass = new Vkontakte();
+                $socialNetworkAdapter = new VKAdapter($vkClass);
         }
 
         $this->sendMessage($socialNetworkAdapter, $courseName);
