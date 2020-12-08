@@ -24,16 +24,26 @@ class Product
      * Получаем все продукты
      *
      * @param string $sortType
+     * @param string $sortDir
      *
      * @return Model\Entity\Product[]
      */
-    public function getAll(string $sortType): array
+    public function getAll(string $sortType=null, string $sortDir='asc'): array
     {
         $productList = $this->getProductRepository()->fetchAll();
 
-        // Применить паттерн Стратегия
-        // $sortType === 'price'; // Сортировка по цене
-        // $sortType === 'name'; // Сортировка по имени
+        switch ($sortType) {
+            case 'name':
+                $sort = new SortName();
+                $productList = $sort->sort($productList, $sortDir);
+                break;
+            case 'price':
+                $sort = new Sortprice();
+                $productList = $sort->sort($productList, $sortDir);
+                break;
+            default:
+                break;
+        }
 
         return $productList;
     }

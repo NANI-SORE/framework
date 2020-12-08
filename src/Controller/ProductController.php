@@ -52,7 +52,9 @@ class ProductController
      */
     public function listAction(Request $request): Response
     {
-        $productList = (new Product())->getAll($request->query->get('sort', ''));
+        $sort = $request->query->get('sort', '');
+        $direction = $request->query->get('dir', '');
+        $productList = (new Product())->getAll($sort, $direction);
 
         return $this->render('product/list.html.php', ['productList' => $productList]);
     }

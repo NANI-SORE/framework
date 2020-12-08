@@ -9,8 +9,10 @@ $body = function () use ($productList, $path) {
         </tr>
         <tr>
             <td colspan="3" align="left">Сортировать по:
-                <a href="<?= $path('product_list') ?>?sort=price">Цене</a>
-                <a href="<?= $path('product_list') ?>?sort=name">Названию</a>
+                <a href="<?= $path('product_list') ?>?sort=price&dir=asc">Цене ↓</a>
+                <a href="<?= $path('product_list') ?>?sort=price&dir=desc">Цене ↑</a>
+                <a href="<?= $path('product_list') ?>?sort=name&dir=asc">Названию ↓</a>
+                <a href="<?= $path('product_list') ?>?sort=name&dir=desc">Названию ↑</a>
             </td>
         </tr>
         <?php
