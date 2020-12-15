@@ -1,9 +1,16 @@
 <?php
 
 use Controller\MainController;
-use Controller\OrderController;
-use Controller\UserController;
-use Controller\ProductController;
+use Controller\ProductListController;
+use Controller\ProductDescriptionListController;
+use Controller\ProductInfoController;
+use Controller\ProductSocialController;
+use Controller\OrderInfoController;
+use Controller\OrderCheckoutController;
+use Controller\UserAuthenticationController;
+use Controller\UserLogoutController;
+use Controller\UserListController;
+use Controller\UserAccountController;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
@@ -16,45 +23,45 @@ $routes->add(
 
 $routes->add(
     'product_list',
-    new Route('/product/list', ['_controller' => [ProductController::class, 'listAction']])
+    new Route('/product/list', ['_controller' => [ProductListController::class, 'listAction']])
 );
 $routes->add(
     'product_desc_list',
-    new Route('/product/desclist', ['_controller' => [ProductController::class, 'descListAction']])
+    new Route('/product/desclist', ['_controller' => [ProductDescriptionListController::class, 'descListAction']])
 );
 $routes->add(
     'product_info',
-    new Route('/product/info/{id}', ['_controller' => [ProductController::class, 'infoAction']])
+    new Route('/product/info/{id}', ['_controller' => [ProductInfoController::class, 'infoAction']])
 );
 $routes->add(
     'product_into_social_network',
-    new Route('/product/social/{network}', ['_controller' => [ProductController::class, 'postAction']])
+    new Route('/product/social/{network}', ['_controller' => [ProductSocialController::class, 'postAction']])
 );
 
 $routes->add(
     'order_info',
-    new Route('/order/info', ['_controller' => [OrderController::class, 'infoAction']])
+    new Route('/order/info', ['_controller' => [OrderInfoController::class, 'infoAction']])
 );
 $routes->add(
     'order_checkout',
-    new Route('/order/checkout', ['_controller' => [OrderController::class, 'checkoutAction']])
+    new Route('/order/checkout', ['_controller' => [OrderCheckoutController::class, 'checkoutAction']])
 );
 
 $routes->add(
     'user_authentication',
-    new Route('/user/authentication', ['_controller' => [UserController::class, 'authenticationAction']])
+    new Route('/user/authentication', ['_controller' => [UserAuthenticationController::class, 'authenticationAction']])
 );
 $routes->add(
     'logout',
-    new Route('/user/logout', ['_controller' => [UserController::class, 'logoutAction']])
+    new Route('/user/logout', ['_controller' => [UserLogoutController::class, 'logoutAction']])
 );
 $routes->add(
     'user_list',
-    new Route('/user/list', ['_controller' => [UserController::class, 'listAction']])
+    new Route('/user/list', ['_controller' => [UserListController::class, 'listAction']])
 );
 $routes->add(
     'account',
-    new Route('/user/account', ['_controller' => [UserController::class, 'accountAction']])
+    new Route('/user/account', ['_controller' => [UserAccountController::class, 'accountAction']])
 );
 
 return $routes;
