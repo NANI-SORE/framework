@@ -1,16 +1,16 @@
 <?php
 
 use Controller\MainController;
-use Controller\ProductListController;
-use Controller\ProductDescriptionListController;
-use Controller\ProductInfoController;
-use Controller\ProductSocialController;
-use Controller\OrderInfoController;
-use Controller\OrderCheckoutController;
-use Controller\UserAuthenticationController;
-use Controller\UserLogoutController;
-use Controller\UserListController;
-use Controller\UserAccountController;
+use Controller\Product\ProductListController;
+use Controller\Product\ProductDescriptionListController;
+use Controller\Product\ProductInfoController;
+use Controller\Product\ProductSocialController;
+use Controller\Order\OrderInfoController;
+use Controller\Order\OrderCheckoutController;
+use Controller\User\UserAuthenticationController;
+use Controller\User\UserLogoutController;
+use Controller\User\UserListController;
+use Controller\User\UserAccountController;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
 
